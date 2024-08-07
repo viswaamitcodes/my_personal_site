@@ -63,7 +63,17 @@
             bottom: 0;
             width: 100%;
         }
+
+        .dev-contact a {
+            color: #ddd;
+            text-decoration: none;
+        }
+
+        .dev-contact a:hover {
+            text-decoration: underline;
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <header>
@@ -84,36 +94,45 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Team 1</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Team 2</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                </tr>
-                <!-- Add more players here -->
+                <!-- Rows will be dynamically generated -->
             </tbody>
         </table>
     </main>
 
-       <footer>
+    <footer>
         <p>&copy; 2024 TCL Carrom League</p>
         <div class="dev-contact">
             <p>Developer Contact: <a href="https://www.linkedin.com/in/viswa-amit" target="_blank">🐞🐞🐞@viswa amit🤝🤝🤝</a></p>
         </div>
-        </footer>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("TCL Carrom League Leaderboard Loaded");
-            // You can add additional functionality here
+            const excelUrl = 'https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog?e=bnZGNp'; // Update with your actual URL
+
+            fetch(excelUrl)
+                .then(response => response.arrayBuffer())
+                .then(data => {
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+                    const tbody = document.querySelector('#leaderboard tbody');
+                    tbody.innerHTML = ''; // Clear existing rows
+
+                    jsonData.forEach((team, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${team['Team Name']}</td>
+                            <td>${team.Wins}</td>
+                            <td>${team.Losses}</td>
+                            <td>${team.Points}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error loading leaderboard data:', error));
         });
     </script>
 </body>
