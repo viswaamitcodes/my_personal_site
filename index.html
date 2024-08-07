@@ -91,7 +91,7 @@
 
         function fetchData() {
             const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-            const excelUrl = 'https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog'; // Replace with your Excel file URL
+            const excelUrl = 'https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog'; // Replace with your actual Excel file URL
             const url = corsProxy + excelUrl;
 
             fetch(url)
@@ -99,11 +99,11 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return response.blob();
+                    return response.arrayBuffer(); // Use arrayBuffer for binary data
                 })
                 .then(data => {
                     try {
-                        const workbook = XLSX.read(data, { type: 'blob' });
+                        const workbook = XLSX.read(data, { type: 'array' });
                         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                         const jsonData = XLSX.utils.sheet_to_json(firstSheet);
                         updateLeaderboard(jsonData);
@@ -118,14 +118,13 @@
             const tableBody = document.querySelector('#leaderboard tbody');
             tableBody.innerHTML = ''; // Clear existing data
 
-            // Assuming the first row contains headers
-            data.slice(1).forEach((team, index) => {
+            data.forEach((team, index) => {
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = index + 1;
-                row.insertCell(1).textContent = team[0]; // Adjust index based on your column setup
-                row.insertCell(2).textContent = team[1]; // Adjust index based on your column setup
-                row.insertCell(3).textContent = team[2]; // Adjust index based on your column setup
-                row.insertCell(4).textContent = team[3]; // Adjust index based on your column setup
+                row.insertCell(1).textContent = team['Team Name'] || ''; // Adjust based on your actual data
+                row.insertCell(2).textContent = team.Wins || '';
+                row.insertCell(3).textContent = team.Losses || '';
+                row.insertCell(4).textContent = team.Points || '';
             });
         }
     </script>
