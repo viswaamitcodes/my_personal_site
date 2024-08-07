@@ -118,13 +118,14 @@
             const tableBody = document.querySelector('#leaderboard tbody');
             tableBody.innerHTML = ''; // Clear existing data
 
-            data.forEach((team, index) => {
+            // Assuming the first row contains headers
+            data.slice(1).forEach((team, index) => {
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = index + 1;
-                row.insertCell(1).textContent = team['Team Name'];
-                row.insertCell(2).textContent = team.Wins;
-                row.insertCell(3).textContent = team.Losses;
-                row.insertCell(4).textContent = team.Points;
+                row.insertCell(1).textContent = team[0]; // Adjust index based on your column setup
+                row.insertCell(2).textContent = team[1]; // Adjust index based on your column setup
+                row.insertCell(3).textContent = team[2]; // Adjust index based on your column setup
+                row.insertCell(4).textContent = team[3]; // Adjust index based on your column setup
             });
         }
     </script>
