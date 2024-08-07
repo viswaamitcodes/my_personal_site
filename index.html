@@ -13,26 +13,21 @@
             color: #333;
             text-align: center;
         }
-
         header {
             background-color: #333;
             color: white;
             padding: 20px;
         }
-
         .logo {
             width: 100px;
             height: auto;
         }
-
         h1 {
             margin: 10px 0;
         }
-
         main {
             padding: 20px;
         }
-
         table {
             width: 80%;
             margin: 0 auto;
@@ -40,21 +35,17 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
         th, td {
             padding: 10px;
             border: 1px solid #ddd;
         }
-
         th {
             background-color: #333;
             color: white;
         }
-
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-
         footer {
             background-color: #333;
             color: white;
@@ -63,25 +54,13 @@
             bottom: 0;
             width: 100%;
         }
-
-        .dev-contact a {
-            color: #ddd;
-            text-decoration: none;
-        }
-
-        .dev-contact a:hover {
-            text-decoration: underline;
-        }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <header>
         <img src="images/TPL LOGO.png" alt="TCL Logo" class="logo">
         <h1>TCL Carrom League Leaderboard</h1>
-        <h3>(website under maintenance - Live analytics visible once game starts)</h3>
     </header>
-
     <main>
         <table id="leaderboard">
             <thead>
@@ -94,11 +73,10 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Rows will be dynamically generated -->
+                <!-- Data will be inserted here -->
             </tbody>
         </table>
     </main>
-
     <footer>
         <p>&copy; 2024 TCL Carrom League</p>
         <div class="dev-contact">
@@ -106,34 +84,42 @@
         </div>
     </footer>
 
+    <!-- Include SheetJS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const excelUrl = 'https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog?e=bnZGNp'; // Update with your actual URL
+        document.addEventListener('DOMContentLoaded', fetchData);
 
-            fetch(excelUrl)
-                .then(response => response.arrayBuffer())
-                .then(data => {
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+        function fetchData() {
+            const url = 'https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog?e=bnZGNp'; // Replace with your Excel file URL
 
-                    const tbody = document.querySelector('#leaderboard tbody');
-                    tbody.innerHTML = ''; // Clear existing rows
+            fetch(url, {
+                headers: {
+                    'Cache-Control': 'no-cache'
+                }
+            })
+            .then(response => response.arrayBuffer())
+            .then(data => {
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                updateLeaderboard(jsonData);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
 
-                    jsonData.forEach((team, index) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td>${team['Team Name']}</td>
-                            <td>${team.Wins}</td>
-                            <td>${team.Losses}</td>
-                            <td>${team.Points}</td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error loading leaderboard data:', error));
-        });
+        function updateLeaderboard(data) {
+            const tableBody = document.querySelector('#leaderboard tbody');
+            tableBody.innerHTML = ''; // Clear existing data
+
+            data.forEach((team, index) => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = index + 1;
+                row.insertCell(1).textContent = team['Team Name'];
+                row.insertCell(2).textContent = team.Wins;
+                row.insertCell(3).textContent = team.Losses;
+                row.insertCell(4).textContent = team.Points;
+            });
+        }
     </script>
 </body>
 </html>
