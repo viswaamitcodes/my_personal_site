@@ -90,9 +90,7 @@
         document.addEventListener('DOMContentLoaded', fetchData);
 
         function fetchData() {
-            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-            const excelUrl = 'https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog'; // Replace with your actual Excel file URL
-            const url = corsProxy + excelUrl;
+            const url = 'tclleaderboard.xlsx';
 
             fetch(url)
                 .then(response => {
