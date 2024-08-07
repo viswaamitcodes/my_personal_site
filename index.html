@@ -73,30 +73,30 @@
         </div>
     </footer>
 
-    <!-- Include SheetJS -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Use Google Sheets option -->
     <script>
         document.addEventListener('DOMContentLoaded', fetchData);
 
         function fetchData() {
-            const url = 'https://cors-anywhere.herokuapp.com/https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog?e=sc91ja&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0'; // Replace with your actual Excel file URL
+            const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUr0UQqs3VjjcLZh2MeIVmkNSYbzcaXNVvmA8Y_yKWGglbs8IaMxw6_PgKjedch97AIu_QFWCGnMD/pub?output=csv'; // Replace with your Google Sheets CSV URL
 
-            fetch(url)
+            fetch(sheetUrl)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return response.arrayBuffer(); // Use arrayBuffer for binary data
+                    return response.text();
                 })
                 .then(data => {
-                    try {
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                        const htmlData = XLSX.utils.sheet_to_html(firstSheet);
-                        updateLeaderboard(htmlData);
-                    } catch (error) {
-                        console.error('Error processing Excel data:', error);
-                    }
+                    const rows = data.split('\n').map(row => row.split(','));
+                    let html = '<table id="leaderboard"><thead><tr><th>Rank</th><th>Team Name</th><th>Wins</th><th>Losses</th><th>Points</th></tr></thead><tbody>';
+
+                    rows.slice(1).forEach((row, index) => {
+                        html += `<tr><td>${index + 1}</td><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td></tr>`;
+                    });
+
+                    html += '</tbody></table>';
+                    updateLeaderboard(html);
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
