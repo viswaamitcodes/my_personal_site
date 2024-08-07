@@ -62,20 +62,9 @@
         <h1>TCL Carrom League Leaderboard</h1>
     </header>
     <main>
-        <table id="leaderboard">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Team Name</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data will be inserted here -->
-            </tbody>
-        </table>
+        <div id="leaderboard-container">
+            <!-- Data will be inserted here -->
+        </div>
     </main>
     <footer>
         <p>&copy; 2024 TCL Carrom League</p>
@@ -90,7 +79,7 @@
         document.addEventListener('DOMContentLoaded', fetchData);
 
         function fetchData() {
-            const url = 'https://cors-anywhere.herokuapp.com/https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog?e=sc91ja&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0';
+            const url = 'https://cors-anywhere.herokuapp.com/https://tapplent403-my.sharepoint.com/:x:/g/personal/viswa_amit_tapplent_com/Eb9FYMFz4dlCgx7a9rkKgfEBEZXlKP4bs3360zKW1JUEog?e=sc91ja&nav=MTVfezAwMDAwMDAwLTAwMDEtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMH0'; // Replace with your actual Excel file URL
 
             fetch(url)
                 .then(response => {
@@ -103,8 +92,8 @@
                     try {
                         const workbook = XLSX.read(data, { type: 'array' });
                         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-                        updateLeaderboard(jsonData);
+                        const htmlData = XLSX.utils.sheet_to_html(firstSheet);
+                        updateLeaderboard(htmlData);
                     } catch (error) {
                         console.error('Error processing Excel data:', error);
                     }
@@ -112,18 +101,9 @@
                 .catch(error => console.error('Error fetching data:', error));
         }
 
-        function updateLeaderboard(data) {
-            const tableBody = document.querySelector('#leaderboard tbody');
-            tableBody.innerHTML = ''; // Clear existing data
-
-            data.forEach((team, index) => {
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = index + 1;
-                row.insertCell(1).textContent = team['Team Name'] || ''; // Adjust based on your actual data
-                row.insertCell(2).textContent = team.Wins || '';
-                row.insertCell(3).textContent = team.Losses || '';
-                row.insertCell(4).textContent = team.Points || '';
-            });
+        function updateLeaderboard(html) {
+            const container = document.querySelector('#leaderboard-container');
+            container.innerHTML = html; // Insert the HTML directly into the container
         }
     </script>
 </body>
