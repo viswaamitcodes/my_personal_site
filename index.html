@@ -12,28 +12,16 @@
             background: linear-gradient(to right, #ffeb3b, #ff6f00); /* Orange to yellow gradient */
             color: #333;
             text-align: center;
-            background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20240519/pngtree-carrom-board-and-black-image_15797790.jpg'); /* Background image */
-            background-size: cover;
-            background-attachment: fixed;
         }
         header {
             background: linear-gradient(to right, #ff6f00, #ffeb3b); /* Orange to yellow gradient */
             color: white;
             padding: 20px;
-            background-image: url('https://media.istockphoto.com/id/148350361/photo/carrom-board.jpg?s=612x612&w=0&k=20&c=gN8J3o-ilCC8ghORUYDqydFfAKpcCd8GUNIN5ys6JHw='); /* Header background image */
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
             position: relative;
         }
         .logo {
             width: 100px;
             height: auto;
-            animation: rotate 10s linear infinite; /* Logo rotation animation */
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
         h1 {
             margin: 10px 0;
@@ -62,7 +50,8 @@
             position: relative;
         }
         table {
-            width: 80%;
+            width: 100%;
+            max-width: 800px;
             margin: 0 auto;
             border-collapse: collapse;
             background-color: #fff;
@@ -119,7 +108,7 @@
             padding: 10px;
             border: 1px solid #ff6f00; /* Orange border */
             border-radius: 4px; /* Rounded corners */
-            width: 300px;
+            width: calc(100% - 130px); /* Responsive width */
             font-size: 1em;
         }
         #video-search button {
@@ -131,28 +120,36 @@
             font-size: 1em;
             cursor: pointer;
             transition: background 0.3s ease; /* Smooth transition */
+            width: 120px; /* Fixed width */
         }
         #video-search button:hover {
             background: linear-gradient(to right, #e65100, #fbc02d); /* Darker gradient on hover */
         }
-        .carrom-images {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .carrom-image {
-            width: 200px;
-            height: auto;
-            margin: 10px;
-            animation: bounce 2s infinite; /* Bounce animation */
-        }
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
+        @media (max-width: 768px) {
+            .logo {
+                width: 80px; /* Smaller logo on mobile */
             }
-            50% {
-                transform: translateY(-10px);
+            h1 {
+                font-size: 1.5em; /* Smaller font size for header */
+            }
+            table {
+                width: 100%;
+                font-size: 0.9em; /* Smaller font size for table */
+            }
+            #video-search input {
+                width: calc(100% - 130px); /* Adjust width for mobile */
+            }
+            #video-search button {
+                width: 100%; /* Full-width button on mobile */
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.2em; /* Even smaller font size for very small screens */
+            }
+            .pdf-button {
+                font-size: 0.8em; /* Smaller font size for button */
+                padding: 8px 16px; /* Smaller padding */
             }
         }
     </style>
@@ -175,12 +172,6 @@
 
         <div class="video-container" id="video-container">
             <!-- Video will be embedded here -->
-        </div>
-
-        <!-- Carrom-themed images -->
-        <div class="carrom-images">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Carrom_pieces.jpg" alt="Carrom Pieces" class="carrom-image">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Carrom_board_pieces.jpg" alt="Carrom Board" class="carrom-image">
         </div>
     </main>
     <footer>
@@ -227,15 +218,16 @@
             let videoUrl;
 
             if (videoId) {
-                if (videoId.startsWith('https://drive.google.com')) {
-                    videoUrl = `https://drive.google.com/file/d/${videoId.split('/')[5]}/preview`;
+                if (videoId.startsWith('https://drive.google.com/')) {
+                    videoUrl = videoId;
                 } else {
                     videoUrl = `https://www.youtube.com/embed/${videoId}`;
                 }
 
-                document.getElementById('video-container').innerHTML = `<iframe src="${videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                const videoContainer = document.getElementById('video-container');
+                videoContainer.innerHTML = `<iframe src="${videoUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             } else {
-                alert('Please enter a valid video ID');
+                alert('Please enter a valid video ID or URL.');
             }
         }
     </script>
