@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCL Carrom League Leaderboard</title>
+    <title>TCL - Tapplent Carrom League Leaderboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,26 +54,46 @@
             bottom: 0;
             width: 100%;
         }
+        .video-container {
+            margin-top: 20px;
+            position: relative;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
     <header>
         <img src="images/TPL LOGO.png" alt="TCL Logo" class="logo">
-        <h1>TCL Carrom League Leaderboard</h1>
+        <h1>TCL - Taplent Carrom League Leaderboard</h1>
     </header>
     <main>
         <div id="leaderboard-container">
             <!-- Data will be inserted here -->
         </div>
+
+        <div id="video-search">
+            <input type="text" id="video-id" placeholder="Enter YouTube video ID or URL">
+            <button onclick="playVideo()">Play Video</button>
+        </div>
+
+        <div class="video-container" id="video-container">
+            <!-- YouTube video will be embedded here -->
+        </div>
     </main>
     <footer>
-        <p>&copy; 2024 TCL Carrom League</p>
+        <p>&copy; 2024 TCL - Tapplent Carrom League</p>
         <div class="dev-contact">
             <p>Developer Contact: <a href="https://www.linkedin.com/in/viswa-amit" target="_blank">🐞🐞🐞@viswa amit🤝🤝🤝</a></p>
         </div>
     </footer>
 
-    <!-- Use Google Sheets option -->
     <script>
         document.addEventListener('DOMContentLoaded', fetchData);
 
@@ -104,6 +124,20 @@
         function updateLeaderboard(html) {
             const container = document.querySelector('#leaderboard-container');
             container.innerHTML = html; // Insert the HTML directly into the container
+        }
+
+        function playVideo() {
+            const videoId = document.getElementById('video-id').value.trim();
+            const videoUrl = videoId.includes('https://') ? videoId.split('v=')[1] : videoId;
+            const videoContainer = document.getElementById('video-container');
+
+            if (videoUrl) {
+                videoContainer.innerHTML = `
+                    <iframe src="https://www.youtube.com/embed/${videoUrl}" frameborder="0" allowfullscreen></iframe>
+                `;
+            } else {
+                videoContainer.innerHTML = '<p>Please enter a valid YouTube video ID or URL.</p>';
+            }
         }
     </script>
 </body>
