@@ -57,14 +57,12 @@
             margin-top: 10px;
             border-radius: 8px; /* Rounded corners */
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-            position: relative;
         }
         .live-match-text {
             display: inline-block;
             padding-left: 100%;
             animation: scroll-left 60s linear infinite;
             font-size: 1.2em;
-            white-space: nowrap; /* Prevent wrapping */
         }
         @keyframes scroll-left {
             from {
@@ -79,13 +77,10 @@
             position: relative;
             flex: 1;
         }
-        #leaderboard-container {
-            margin: 20px auto;
-            width: 100%;
-            max-width: 800px;
-        }
         table {
             width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
             border-collapse: collapse;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -106,25 +101,47 @@
             color: white;
             padding: 10px;
             position: relative;
+            bottom: 0;
             width: 100%;
         }
         .video-container {
             margin-top: 20px;
             position: relative;
-            height: 0;
             padding-top: 56.25%; /* 16:9 aspect ratio */
-            overflow: hidden; /* Hide overflow */
+            background-image: url('TEAM 1.jpg'); /* Replace with the actual path to your background image */
+            background-size: cover; /* Ensure the image covers the entire container */
+            background-position: center; /* Center the background image */
             border: 4px solid #ff6f00; /* Deep orange border */
             border-radius: 8px; /* Rounded corners */
             box-shadow: 0 0 15px rgba(0,0,0,0.2); /* Shadow for depth */
-            background-size: cover; /* Ensure the image covers the entire container */
-            background-position: center; /* Center the background image */
+            overflow: hidden; /* Hide overflow */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px; /* Rounded corners */
+        }
+        #video-search {
+            margin-top: 20px;
+            padding: 10px;
+            background: linear-gradient(to right, #ffcc80, #ffb74d); /* Light orange to medium orange gradient */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Shadow for depth */
             display: inline-block;
+            position: relative;
         }
-        .image-navigation {
-            margin-top: 10px;
+        #video-search input {
+            padding: 10px;
+            border: 1px solid #ff6f00; /* Deep orange border */
+            border-radius: 4px; /* Rounded corners */
+            width: calc(100% - 130px); /* Responsive width */
+            font-size: 1em;
         }
-        .image-navigation button {
+        #video-search button {
             padding: 10px 20px;
             border: none;
             border-radius: 4px; /* Rounded corners */
@@ -133,9 +150,9 @@
             font-size: 1em;
             cursor: pointer;
             transition: background 0.3s ease; /* Smooth transition */
-            margin: 0 5px; /* Space between buttons */
+            width: 120px; /* Fixed width */
         }
-        .image-navigation button:hover {
+        #video-search button:hover {
             background: linear-gradient(to right, #e65100, #ff6f00); /* Darker gradient on hover */
         }
         @media (max-width: 768px) {
@@ -173,7 +190,7 @@
         <h1>TCL - Tapplent Carrom League Leaderboard</h1>
         <a href="rules.pdf" class="pdf-button" target="_blank">Rules PDF</a> <!-- PDF Button -->
         <div class="live-match-container">
-            <p class="live-match-text">Live Match: Team Thalassery vs Team Gladiators - Follow the action live post 5:30pm! -- participating teams today: Thalassery vs Gladiators, CSS Chameleons vs Boom Boom Backend, Thalassery vs Sharp Shooters, Defenders vs Java Jitters! Stay tuned for live updates....</p>
+            <p class="live-match-text">Live Match: Team Thalassery vs Team Gladiators - Follow the action live post 5:30pm ! -- participating teams today : Thalassery vs Gladiators , CSS Chameleons vs Boom Boom Backend , Thalassery vs Sharp Shooters , Defenders vs Java Jitters ! stay tuned for live updates.... </p>
         </div>
     </header>
     <main>
@@ -189,11 +206,6 @@
         <div class="video-container" id="video-container">
             <!-- Video will be embedded here -->
         </div>
-
-        <div class="image-navigation">
-            <button onclick="prevImage()">Previous</button>
-            <button onclick="nextImage()">Next</button>
-        </div>
     </main>
     <footer>
         <p>&copy; 2024 TCL - Tapplent Carrom League</p>
@@ -203,31 +215,54 @@
     </footer>
 
     <script>
-        let currentImageIndex = 0;
-        const images = [
-            'TEAM 1.jpg',
-            'TEAM 2.jpg',
-            'TEAM 3.jpg',
-            'TEAM 4.jpg'
-        ];
+        document.addEventListener('DOMContentLoaded', fetchData);
 
-        function updateBackground() {
-            const container = document.getElementById('video-container');
-            container.style.backgroundImage = `url(${images[currentImageIndex]})`;
+        function fetchData() {
+            const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxUr0UQqs3VjjcLZh2MeIVmkNSYbzcaXNVvmA8Y_yKWGglbs8IaMxw6_PgKjedch97AIu_QFWCGnMD/pub?output=csv'; // Replace with your Google Sheets CSV URL
+
+            fetch(sheetUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const rows = data.split('\n').map(row => row.split(','));
+                    let html = '<table id="leaderboard"><thead><tr><th>Match No</th><th>Team Name</th><th>Wins</th><th>Losses</th><th>Points</th><th>Remarks</th></tr></thead><tbody>';
+
+                    rows.slice(1).forEach((row, index) => {
+                        html += `<tr><td>${index + 1}</td><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td></tr>`;
+                    });
+
+                    html += '</tbody></table>';
+                    updateLeaderboard(html);
+                })
+                .catch(error => console.error('Error fetching data:', error));
         }
 
-        function nextImage() {
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-            updateBackground();
+        function updateLeaderboard(html) {
+            const container = document.querySelector('#leaderboard-container');
+            container.innerHTML = html; // Insert the HTML directly into the container
         }
 
-        function prevImage() {
-            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            updateBackground();
-        }
+        function playVideo() {
+            const videoId = document.getElementById('video-id').value.trim();
+            let videoUrl;
 
-        // Initialize with the first image
-        updateBackground();
+            if (videoId) {
+                if (videoId.startsWith('https://drive.google.com/')) {
+                    videoUrl = videoId;
+                } else {
+                    videoUrl = `https://www.youtube.com/embed/${videoId}`;
+                }
+
+                const videoContainer = document.getElementById('video-container');
+                videoContainer.innerHTML = `<iframe src="${videoUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            } else {
+                alert('Please enter a valid video ID or URL.');
+            }
+        }
     </script>
 </body>
 </html>
