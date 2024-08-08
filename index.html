@@ -111,49 +111,15 @@
         .video-container {
             margin-top: 20px;
             position: relative;
+            height: 0;
             padding-top: 56.25%; /* 16:9 aspect ratio */
-            background-size: cover; /* Ensure the image covers the entire container */
-            background-position: center; /* Center the background image */
+            overflow: hidden; /* Hide overflow */
             border: 4px solid #ff6f00; /* Deep orange border */
             border-radius: 8px; /* Rounded corners */
             box-shadow: 0 0 15px rgba(0,0,0,0.2); /* Shadow for depth */
-            overflow: hidden; /* Hide overflow */
+            background-size: cover; /* Ensure the image covers the entire container */
+            background-position: center; /* Center the background image */
             display: inline-block;
-        }
-        .video-container img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px; /* Rounded corners */
-        }
-        #video-search {
-            margin-top: 20px;
-            padding: 10px;
-            background: linear-gradient(to right, #ffcc80, #ffb74d); /* Light orange to medium orange gradient */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Shadow for depth */
-            display: inline-block;
-            position: relative;
-        }
-        #video-search input {
-            padding: 10px;
-            border: 1px solid #ff6f00; /* Deep orange border */
-            border-radius: 4px; /* Rounded corners */
-            width: calc(100% - 130px); /* Responsive width */
-            font-size: 1em;
-        }
-        #video-search button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px; /* Rounded corners */
-            background: linear-gradient(to right, #ff6f00, #e65100); /* Deep orange to darker orange gradient */
-            color: white;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background 0.3s ease; /* Smooth transition */
-            width: 120px; /* Fixed width */
-        }
-        #video-search button:hover {
-            background: linear-gradient(to right, #e65100, #ff6f00); /* Darker gradient on hover */
         }
         .image-navigation {
             margin-top: 10px;
@@ -222,7 +188,6 @@
 
         <div class="video-container" id="video-container">
             <!-- Video will be embedded here -->
-            <img src="TEAM 1.jpg" id="video-image" alt="Slideshow Image"> <!-- Placeholder for images -->
         </div>
 
         <div class="image-navigation">
@@ -246,22 +211,23 @@
             'TEAM 4.jpg'
         ];
 
-        function showImage(index) {
-            document.getElementById('video-image').src = images[index];
+        function updateBackground() {
+            const container = document.getElementById('video-container');
+            container.style.backgroundImage = `url(${images[currentImageIndex]})`;
         }
 
         function nextImage() {
             currentImageIndex = (currentImageIndex + 1) % images.length;
-            showImage(currentImageIndex);
+            updateBackground();
         }
 
         function prevImage() {
             currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            showImage(currentImageIndex);
+            updateBackground();
         }
 
         // Initialize with the first image
-        showImage(currentImageIndex);
+        updateBackground();
     </script>
 </body>
 </html>
