@@ -79,10 +79,13 @@
             position: relative;
             flex: 1;
         }
-        table {
+        #leaderboard-container {
+            margin: 20px auto;
             width: 100%;
             max-width: 800px;
-            margin: 0 auto;
+        }
+        table {
+            width: 100%;
             border-collapse: collapse;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -115,6 +118,7 @@
             border-radius: 8px; /* Rounded corners */
             box-shadow: 0 0 15px rgba(0,0,0,0.2); /* Shadow for depth */
             overflow: hidden; /* Hide overflow */
+            display: inline-block;
         }
         .video-container img {
             width: 100%;
@@ -149,6 +153,23 @@
             width: 120px; /* Fixed width */
         }
         #video-search button:hover {
+            background: linear-gradient(to right, #e65100, #ff6f00); /* Darker gradient on hover */
+        }
+        .image-navigation {
+            margin-top: 10px;
+        }
+        .image-navigation button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px; /* Rounded corners */
+            background: linear-gradient(to right, #ff6f00, #e65100); /* Deep orange to darker orange gradient */
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease; /* Smooth transition */
+            margin: 0 5px; /* Space between buttons */
+        }
+        .image-navigation button:hover {
             background: linear-gradient(to right, #e65100, #ff6f00); /* Darker gradient on hover */
         }
         @media (max-width: 768px) {
@@ -202,7 +223,11 @@
         <div class="video-container" id="video-container">
             <!-- Video will be embedded here -->
             <img src="TEAM 1.jpg" id="video-image" alt="Slideshow Image"> <!-- Placeholder for images -->
-            <button onclick="changeImage()">Next Image</button> <!-- Button to change images -->
+        </div>
+
+        <div class="image-navigation">
+            <button onclick="prevImage()">Previous</button>
+            <button onclick="nextImage()">Next</button>
         </div>
     </main>
     <footer>
@@ -211,6 +236,7 @@
             <p>Developer Contact: <a href="https://www.linkedin.com/in/viswa-amit" target="_blank">🐞🐞🐞@viswa amit🤝🤝🤝</a></p>
         </div>
     </footer>
+
     <script>
         let currentImageIndex = 0;
         const images = [
@@ -220,10 +246,22 @@
             'TEAM 4.jpg'
         ];
 
-        function changeImage() {
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-            document.getElementById('video-image').src = images[currentImageIndex];
+        function showImage(index) {
+            document.getElementById('video-image').src = images[index];
         }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            showImage(currentImageIndex);
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            showImage(currentImageIndex);
+        }
+
+        // Initialize with the first image
+        showImage(currentImageIndex);
     </script>
 </body>
 </html>
