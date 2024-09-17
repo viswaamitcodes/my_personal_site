@@ -142,25 +142,7 @@
         #video-search button:hover {
             background: linear-gradient(to right, #e65100, #ff6f00); /* Darker gradient on hover */
         }
-        table {
-            width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-        th {
-            background: linear-gradient(to right, #ff6f00, #e65100); /* Deep orange to darker orange gradient for table headers */
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+
         footer {
             background: linear-gradient(to right, #ff6f00, #e65100); /* Deep orange to darker orange gradient */
             color: white;
@@ -169,31 +151,24 @@
             bottom: 0;
             width: 100%;
         }
-        @media (max-width: 768px) {
-            .logo {
-                width: 80px; /* Smaller logo on mobile */
-            }
-            h1 {
-                font-size: 1.5em; /* Smaller font size for header */
-            }
-            table {
-                width: 100%;
-                font-size: 0.9em; /* Smaller font size for table */
-            }
-            #video-search input {
-                width: calc(100% - 130px); /* Adjust width for mobile */
-            }
-            #video-search button {
-                width: 100%; /* Full-width button on mobile */
-            }
+
+        /* Cracker Animation */
+        .cracker {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #ff5722;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
         }
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.2em; /* Even smaller font size for very small screens */
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
             }
-            .pdf-button {
-                font-size: 0.8em; /* Smaller font size for button */
-                padding: 8px 16px; /* Smaller padding */
+            100% {
+                transform: scale(5);
+                opacity: 0;
             }
         }
     </style>
@@ -216,36 +191,25 @@
                 <img src="TEAM 3.jpg" alt="Image 3">
                 <img src="TEAM 4.jpg" alt="Image 4">
                 <img src="TEAM 5.jpg" alt="Image 5">
-                <img src="TEAM 6.jpg" alt="Image 6">
-                <img src="TEAM 7.jpg" alt="Image 7">
-                <img src="TEAM 8.jpg" alt="Image 8">
-                <img src="TEAM 9.jpg" alt="Image 9">
-                <img src="TEAM 10.jpg" alt="Image 10">
-                <img src="TEAM 11.jpg" alt="Image 11">
-
-
             </div>
             <button class="carousel-button next" onclick="moveSlide(1)">&#10095;</button>
         </div>
 
+        <!-- Video Search Section -->
         <div id="video-search">
-            <input type="text" id="video-id" placeholder="Enter YouTube video ID or Google Drive file ID">
-            <button onclick="playVideo()">Play Video</button>
+            <input type="text" placeholder="Search video highlights..." id="search-input">
+            <button onclick="searchVideo()">Search</button>
         </div>
 
-        <div class="video-container" id="video-container">
-            <!-- Video will be embedded here -->
-        </div>
+        <!-- Cracker Animation Section -->
+        <div id="cracker-container"></div> <!-- Empty div for crackers -->
 
-        <div id="leaderboard-container">
-            <!-- Data will be inserted here -->
-        </div>
+        <!-- Leaderboard Table -->
+        <div id="leaderboard-container"></div> <!-- Data will be inserted here -->
+
     </main>
     <footer>
-        <p>&copy; 2024 TCL - Tapplent Carrom League</p>
-        <div class="dev-contact">
-            <p>Developer Contact: <a href="https://www.linkedin.com/in/viswa-amit" target="_blank">🐞🐞🐞@viswa amit🤝🤝🤝</a></p>
-        </div>
+        <p>Tapplent Carrom League &copy; 2024. All rights reserved.</p>
     </footer>
 
     <script>
@@ -280,22 +244,10 @@
             container.innerHTML = html; // Insert the HTML directly into the container
         }
 
-        function playVideo() {
-            const videoId = document.getElementById('video-id').value.trim();
-            let videoUrl;
-
-            if (videoId) {
-                if (videoId.startsWith('https://drive.google.com/')) {
-                    videoUrl = videoId;
-                } else {
-                    videoUrl = `https://www.youtube.com/embed/${videoId}`;
-                }
-
-                const videoContainer = document.getElementById('video-container');
-                videoContainer.innerHTML = `<iframe src="${videoUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            } else {
-                alert('Please enter a valid video ID or URL.');
-            }
+        function searchVideo() {
+            const query = document.getElementById('search-input').value;
+            // Add your search functionality here
+            console.log('Searching for:', query);
         }
 
         let currentSlide = 0;
@@ -306,6 +258,21 @@
             currentSlide = (currentSlide + step + totalSlides) % totalSlides;
             document.getElementById('carousel').style.transform = `translateX(-${currentSlide * 100}%)`;
         }
+
+        function createCracker() {
+            const cracker = document.createElement('div');
+            cracker.classList.add('cracker');
+            cracker.style.left = `${Math.random() * 100}%`;
+            cracker.style.top = `${Math.random() * 100}%`;
+
+            document.getElementById('cracker-container').appendChild(cracker);
+
+            setTimeout(() => {
+                cracker.remove();
+            }, 1000); // Remove cracker after animation
+        }
+
+        setInterval(createCracker, 500); // Create a new cracker every 500 milliseconds
     </script>
 </body>
 </html>
